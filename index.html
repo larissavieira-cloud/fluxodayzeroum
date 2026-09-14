@@ -1163,7 +1163,7 @@ LEGIBILITY, outranks composition: headline caps at least 7% of frame height, sub
 <div class="steps">
   <div class="stp"><b>01</b><h4>Escolha o jogo</h4><p>Mesma biblioteca de sempre. Define placa, props, luz e cor do texto.</p></div>
   <div class="stp"><b>02</b><h4>Cole a copy</h4><p>Headline e subheadline, iguais à aba da dupla.</p></div>
-  <div class="stp"><b>03</b><h4>Distribua o trio</h4><p>Quem fica na frente, quem recua, quem ancora e quem segura a placa.</p></div>
+  <div class="stp"><b>03</b><h4>Distribua o squad</h4><p>Dois na frente, dois recuados. Quem ancora e quem segura a placa.</p></div>
   <div class="stp"><b>04</b><h4>Copie os quatro</h4><p>Mesmos destinos de sempre. O compositor entende N=3.</p></div>
 </div>
 
@@ -3289,6 +3289,7 @@ $('copyAll').addEventListener('click',e=>{
  const m=e.target.dataset.mode;
  if(m==='missao') copy(BAYS.filter(b=>!(b.i==='02'&&S.subOff)).map(b=>`═══ ${b.n.toUpperCase()} ═══\n${b.f()}`).join('\n\n'),e.target);
  else if(m==='trio') copy(TRBAYS.filter(b=>!(b.i==='02'&&TR.subOff)).map(b=>`═══ ${b.n.toUpperCase()} ═══\n${b.f()}`).join('\n\n'),e.target);
+ else if(m==='squad') copy(SQBAYS.filter(b=>!(b.i==='02'&&SQ.subOff)).map(b=>`═══ ${b.n.toUpperCase()} ═══\n${b.f()}`).join('\n\n'),e.target);
  else if(m==='solo') copy(SOBAYS.filter(b=>!(b.i==='02'&&SO.subOff)).map(b=>`═══ ${b.n.toUpperCase()} ═══\n${b.f()}`).join('\n\n'),e.target);
  else if(m==='elenco') copy(`═══ REQUEST SCENE ═══\n${eScene()}\n\n═══ REQUEST ELENCO ═══\n${ePrompt()}`,e.target);
  else if(m==='inter') copy(`═══ REQUEST MOLDURA ═══\n${iFramePrompt()}\n\n═══ REQUEST CAÇA-PALAVRAS ═══\n${iRequest()}`,e.target);
@@ -3296,7 +3297,7 @@ $('copyAll').addEventListener('click',e=>{
  else if(m==='brief') copy(bfPrompt(),e.target);
  else copy(hPrompt(),e.target);
 });
-$('exportBtn').addEventListener('click',e=>{$('ioBox').value=JSON.stringify({missao:S,solo:SO,trio:TR,humanoide:H,elenco:E,ivsolo:IV,brief:BF},null,1);copy($('ioBox').value,e.target)});
+$('exportBtn').addEventListener('click',e=>{$('ioBox').value=JSON.stringify({missao:S,solo:SO,trio:TR,squad:SQ,humanoide:H,elenco:E,ivsolo:IV,brief:BF},null,1);copy($('ioBox').value,e.target)});
 $('importBtn').addEventListener('click',()=>{
  try{const o=JSON.parse($('ioBox').value);
   if(o.missao){Object.assign(S,o.missao);S.nodes=Object.assign(Object.fromEntries(NODES),o.missao.nodes||{});
@@ -3327,6 +3328,14 @@ $('importBtn').addEventListener('click',()=>{
    $('trPose').value=TR.poseTxt||'';$('trDir').value=TR.dir||'';$('trPoseSel').value=TRPOSES[TR.pose]?TR.pose:'_c';
    $('trGame').value=GAMES.find(x=>x[0]===TR.game)?TR.game:$('trGame').value;
    trRows();trOpts();trRender()}
+  if(o.squad){Object.assign(SQ,o.squad);
+   if(!Array.isArray(SQ.chars)||SQ.chars.length!==4)SQ.chars=[{n:'@PERSONAGEM 1',t:'hero'},{n:'@PERSONAGEM 2',t:'hero'},{n:'@PERSONAGEM 3',t:'mid'},{n:'@PERSONAGEM 4',t:'mid'}];
+   $('sqSetting').value=SQ.setting||'';$('sqMood').value=SQ.mood||'';$('sqLight').value=SQ.keylight||'';
+   $('sqRamp').value=SQ.ramp||'';$('sqMount').value=SQ.mount||'';$('sqGrip').value=SQ.grip||'';
+   $('sqHl').value=SQ.hl||'';$('sqSub').value=SQ.sub||'';$('sqFmt').value=SQ.fmt||'4:5';$('sqNoSub').value=NOSUB[SQ.noSub]?SQ.noSub:'props';SQ.subOff=!!SQ.subOff;TR['_syncsqSubOff']&&TR['_syncsqSubOff']();
+   $('sqPose').value=SQ.poseTxt||'';$('sqDir').value=SQ.dir||'';$('sqPoseSel').value=SQPOSES[SQ.pose]?SQ.pose:'_c';
+   $('sqGame').value=GAMES.find(x=>x[0]===SQ.game)?SQ.game:$('sqGame').value;
+   sqRows();sqOpts();sqRender()}
   if(o.elenco){Object.assign(E,o.elenco);
    if(!Array.isArray(E.chars)||E.chars.length<2)E.chars=[{n:'@PERSONAGEM 1',t:'hero'},{n:'@PERSONAGEM 2',t:'hero'}];
    $('eSetting').value=E.setting||'';$('eMood').value=E.mood||'';$('eLight').value=E.keylight||'';
